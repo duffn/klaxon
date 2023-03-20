@@ -1,4 +1,4 @@
-FROM ruby:2.7.2
+FROM ruby:2.7.6
 
 # throw errors if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1
@@ -8,7 +8,8 @@ WORKDIR /usr/src/app
 
 COPY Gemfile /usr/src/app/
 COPY Gemfile.lock /usr/src/app/
-RUN bundle install
+RUN gem install bundler:2.3.22 && \
+    bundle install
 
 COPY . /usr/src/app
 
