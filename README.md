@@ -1,4 +1,4 @@
-## Get emailed when a website changes
+## Get emailed when a website changes1
 
 Klaxon is a free, quick to set up and easy to use _robot_ that checks websites regularly so you don't have to.
 
