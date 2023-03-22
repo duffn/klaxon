@@ -13,26 +13,24 @@ class Change < ApplicationRecord
       return
     end
 
-    if before.created_at > after.created_at
-      errors.add(:after, "'after' must be created_at after 'before'")
-    end
+    return unless before.created_at > after.created_at
+
+    errors.add(:after, "'after' must be created_at after 'before'")
   end
 
   # TODO: service object should manage creating changes and notifications, after_create for now
   after_create :send_notifications
   def send_notifications
-    subscriptions = Subscription.where(watching: self.after.parent)
+    subscriptions = Subscription.where(watching: after.parent)
     subscriptions.all.map do |subscription|
-      begin
-        subscription.send_notification(self)
-      rescue Exception => e
-        puts "Error sending notification for Change #{self.id}", e
-      end
+      subscription.send_notification(self)
+    rescue Exception => e
+      puts "Error sending notification for Change #{id}", e
     end
 
     # unlike people and slack channels, there are no "subscriptions" to SQS integrations,
     # instead, all changes are sent to the queue -- allowing the consumer to choose which to act on
-    SqsIntegration.all.each{|sqs_integration| sqs_integration.send_notification(self) }
+    SqsIntegration.all.each { |sqs_integration| sqs_integration.send_notification(self) }
   end
 
   def self.check
@@ -43,13 +41,13 @@ class Change < ApplicationRecord
 
       Change.where(
         before: current&.previous, # this can pass nil, but it will be throw an error if so
-        after:  current
+        after: current
       ).first_or_create
     end
   end
 
   def self.destroy_related(record)
-    self.where(before: record).destroy_all
-    self.where(after: record).destroy_all
+    where(before: record).destroy_all
+    where(after: record).destroy_all
   end
 end

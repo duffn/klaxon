@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Change, type: :model do
   include ActiveJob::TestHelper
 
-  it "is the edge between page_snapshots (happy path, already sorted)" do
+  it 'is the edge between page_snapshots (happy path, already sorted)' do
     page = create(:page, :with_snapshots, snapshot_count: 2)
     snapshots = page.page_snapshots
     expect(snapshots.count).to eq 2
@@ -13,7 +13,7 @@ RSpec.describe Change, type: :model do
     expect(change.after).to eq(snapshots.last)
   end
 
-  it "is not valid if the ordering is backward" do
+  it 'is not valid if the ordering is backward' do
     page = create(:page, :with_snapshots, snapshot_count: 2)
     snapshots = page.page_snapshots
 
@@ -28,12 +28,12 @@ RSpec.describe Change, type: :model do
 
     expect(snapshots.count).to eq 2
 
-    expect {
-        Change.create!(before: snapshots.last, after: snapshots.first)
-    }.to raise_error(ActiveRecord::RecordInvalid)
+    expect do
+      Change.create!(before: snapshots.last, after: snapshots.first)
+    end.to raise_error(ActiveRecord::RecordInvalid)
   end
 
-  it "sends email notification for subscriptions on new snapshots" do
+  it 'sends email notification for subscriptions on new snapshots' do
     user = create(:user)
     page = create(:page, :with_snapshots, snapshot_count: 5)
     expect(page.page_snapshots.count).to be > 2 # make sure we're testing for multiple-snapshots issues
@@ -51,7 +51,7 @@ RSpec.describe Change, type: :model do
     expect(ActionMailer::Base.deliveries.length).to eq 1
   end
 
-  it "doesnt send anything if there is only one snapshot for a page" do
+  it 'doesnt send anything if there is only one snapshot for a page' do
     user = create(:user)
     page = create(:page, :with_snapshots, snapshot_count: 1)
     expect(page.page_snapshots.count).to be 1
@@ -64,5 +64,4 @@ RSpec.describe Change, type: :model do
 
     expect(ActionMailer::Base.deliveries.length).to eq 0
   end
-
 end
