@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.7.6'
+ruby '3.2.1'
 
 gem 'rails', '~> 6.0.0'
 gem 'pg', '~> 1.4'
@@ -26,6 +26,8 @@ gem 'diffy'
 gem 'kramdown'
 
 gem 'aws-sdk-sqs', '~> 1.53'
+
+gem 'psych', '< 4'
 
 group :development, :test do
   gem 'byebug'
